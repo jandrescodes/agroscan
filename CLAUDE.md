@@ -34,7 +34,7 @@ php artisan pail
 ## Stack
 
 - **Laravel 12**, PHP 8.2+
-- **Database:** MySQL (producción / dev local con Docker) — SQLite solo para tests
+- **Database:** MariaDB (producción / dev local con XAMPP) — SQLite solo para tests
 - **Frontend:** Tailwind CSS v4 via `@tailwindcss/vite`, Blade templates, Vite 7
 - **IA:** Gemini 2.5 Flash via Gemini Vision API (`GEMINI_API_KEY`, `GEMINI_MODEL` en `.env`)
 - **Clima:** Open-Meteo API (sin clave — HTTP público)
@@ -48,19 +48,19 @@ Standard Laravel MVC.
 ```
 app/
 ├── Http/Controllers/
-│   └── DiagnosticoController.php   ← sube imagen, llama servicios, persiste resultado
+│   └── DiagnosisController.php   ← sube imagen, llama servicios, persiste resultado
 ├── Models/
-│   └── Diagnostico.php
+│   └── Diagnosis.php
 ├── Services/
 │   ├── GeminiService.php           ← llama Gemini Vision API, devuelve array estructurado
 │   └── WeatherService.php          ← llama Open-Meteo, devuelve condiciones actuales
 config/
 └── gemini.php                      ← api_key, model, endpoint, timeout
 database/migrations/
-└── ..._create_diagnosticos_table.php
+└── ..._create_diagnoses_table.php
 resources/views/
-└── diagnostico/
-    ├── crear.blade.php             ← formulario de carga de imagen
+└── diagnosis/
+    ├── create.blade.php            ← formulario de carga de imagen
     └── show.blade.php              ← resultado del diagnóstico
 routes/
 └── web.php
@@ -99,7 +99,7 @@ El prompt instruye a Gemini a devolver **solo** JSON válido con esta forma:
 - Services are injected via constructor DI — no `app()` calls inside controllers.
 - `GeminiService` throws `\RuntimeException` on API errors; the controller catches and redirects with an error flash.
 - `WeatherService` returns `null` on failure — weather is enrichment, not required.
-- Images are stored in `storage/app/public/diagnosticos/` via `Storage::disk('public')`.
+- Images are stored in `storage/app/public/diagnoses/` via `Storage::disk('public')`.
 - All user-facing strings are in Spanish.
 - No JS frameworks — plain Blade + Alpine.js if lightweight interactivity is needed.
 

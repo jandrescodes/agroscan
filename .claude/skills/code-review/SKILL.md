@@ -38,7 +38,7 @@ Review each changed file against the checklist below. Group findings by severity
 - [ ] Image validation present — `mimes:jpg,jpeg,png,webp|max:5120` (or equivalent) in FormRequest
 - [ ] Blade output escaped — `{{ }}` used everywhere; `{!! !!}` only for trusted internal HTML
 - [ ] CSRF token present on all POST forms (`@csrf`)
-- [ ] Uploaded files stored in `storage/app/public/diagnosticos/` only — no arbitrary paths
+- [ ] Uploaded files stored in `storage/app/public/diagnoses/` only — no arbitrary paths
 
 ---
 

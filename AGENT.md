@@ -19,7 +19,7 @@ devolver un diagnóstico estructurado con acciones inmediatas y preventivas.
 
 - **Backend:** Laravel 12, PHP 8.2+, Eloquent ORM
 - **Frontend:** Tailwind CSS v4, Blade templates, Vite 7
-- **Base de datos:** MySQL (dev/prod) — SQLite solo en tests
+- **Base de datos:** MariaDB (dev con XAMPP / prod) — SQLite solo en tests
 - **IA:** Gemini 2.5 Flash (Gemini Vision API) — clave en `GEMINI_API_KEY`
 - **Clima:** Open-Meteo API (pública, sin clave)
 - **Control de versiones:** Git + GitHub
@@ -32,9 +32,9 @@ devolver un diagnóstico estructurado con acciones inmediatas y preventivas.
 agroscan/
 ├── app/
 │   ├── Http/Controllers/
-│   │   └── DiagnosticoController.php
+│   │   └── DiagnosisController.php
 │   ├── Models/
-│   │   └── Diagnostico.php
+│   │   └── Diagnosis.php
 │   └── Services/
 │       ├── GeminiService.php       ← Gemini Vision API
 │       └── WeatherService.php      ← Open-Meteo API
@@ -42,10 +42,10 @@ agroscan/
 │   └── gemini.php
 ├── database/
 │   └── migrations/
-│       └── ..._create_diagnosticos_table.php
+│       └── ..._create_diagnoses_table.php
 ├── resources/views/
-│   └── diagnostico/
-│       ├── crear.blade.php
+│   └── diagnosis/
+│       ├── create.blade.php
 │       └── show.blade.php
 └── routes/
     └── web.php
@@ -56,9 +56,9 @@ agroscan/
 ## Base de Datos
 
 ```sql
-diagnosticos (
+diagnoses (
     id                  BIGINT PK,
-    image_path          VARCHAR,        -- ruta en storage/app/public/diagnosticos/
+    image_path          VARCHAR,        -- ruta en storage/app/public/diagnoses/
     crop                VARCHAR,        -- maíz, soya, cacao, etc.
     location            VARCHAR,        -- ciudad/municipio referencial
     has_problem         BOOLEAN,
@@ -113,7 +113,7 @@ El prompt siempre instruye a Gemini a responder **solo** con JSON válido:
 
 ### PHP — Controladores
 
-- Un controlador por módulo: `DiagnosticoController`, etc.
+- Un controlador por módulo: `DiagnosisController`, etc.
 - Métodos estándar: `create()` (formulario), `store()` (procesa imagen), `show()` (resultado).
 - Services inyectados vía constructor — nunca `app()` ni `resolve()` en controladores.
 - El controlador atrapa `\RuntimeException` de `GeminiService` y redirige con `->with('error', ...)`.
@@ -155,7 +155,7 @@ feature/descripcion  ← Una rama por feature
 **Mensajes de commit (Conventional Commits en español):**
 
 ```
-feat(diagnostico): implementar análisis de imagen con Gemini Vision
+feat(diagnosis): implementar análisis de imagen con Gemini Vision
 fix(weather): manejar timeout de Open-Meteo sin romper el flujo
 refactor(gemini): extraer construcción del prompt a método privado
 ```
@@ -166,7 +166,7 @@ refactor(gemini): extraer construcción del prompt a método privado
 
 - **NO** exponer la API key de Gemini en código, logs ni respuestas HTTP.
 - **NO** hacer llamadas HTTP síncronas largas sin timeout configurado en el service.
-- **NO** guardar imágenes fuera de `storage/app/public/diagnosticos/`.
+- **NO** guardar imágenes fuera de `storage/app/public/diagnoses/`.
 - **NO** devolver el JSON crudo de Gemini al frontend — siempre pasar por el contrato.
 - **NO** introducir paquetes Composer nuevos sin revisar que no exista solución nativa en Laravel 12.
 - **NO** usar `dd()` / `dump()` en código que llegue a producción.

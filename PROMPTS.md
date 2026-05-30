@@ -67,7 +67,7 @@ con APIs de IA y buenas prácticas de Laravel 12.
 
 [Contexto]
 Proyecto: AgroScan — Laravel 12, MySQL, Tailwind CSS v4, Blade, Gemini Vision API, Open-Meteo.
-Módulo activo: [nombre — ej: diagnostico, historial, reportes]
+Módulo activo: [nombre — ej: diagnosis, history, reports]
 
 Archivos relevantes:
 - app/Http/Controllers/[Modulo]Controller.php
@@ -83,9 +83,9 @@ Implementar [nombre exacto del feature].
 Descripción: [criterios de aceptación]
 
 [Restricciones]
-- Seguir el patrón Controller → Service → Model de DiagnosticoController como referencia
+- Seguir el patrón Controller → Service → Model de DiagnosisController como referencia
 - FormRequest para validación — nunca validate() inline en el controlador
-- Imagen almacenada en storage/app/public/diagnosticos/ vía Storage::disk('public')
+- Imagen almacenada en storage/app/public/diagnoses/ vía Storage::disk('public')
 - GeminiService::analyze() recibe la ruta local de la imagen y el tipo de cultivo (`crop`)
 - Respuesta de Gemini siempre validada contra el contrato JSON definido en AGENT.md
 - WeatherService::getConditions() recibe lat/lng; retorna null si falla
@@ -232,7 +232,7 @@ Proyecto: AgroScan — Laravel 12, MySQL, Tailwind CSS v4, Gemini Vision API, Op
 Módulo nuevo: [nombre]
 
 BD existente relevante:
-- diagnosticos (id, image_path, crop, location, has_problem, pest_name,
+- diagnoses (id, image_path, crop, location, has_problem, pest_name,
   risk_level, description, immediate_action, preventive_action, confidence,
   temperatura, humedad, condicion_clima, created_at, updated_at)
 

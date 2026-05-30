@@ -52,7 +52,7 @@ BREAKING CHANGE: `extends` key behavior changed
 
 | Scope          | Area                                  |
 |----------------|---------------------------------------|
-| `diagnostico`  | Diagnosis flow (upload, analyze, show)|
+| `diagnosis`    | Diagnosis flow (upload, analyze, show)|
 | `gemini`       | GeminiService and prompt              |
 | `weather`      | WeatherService and Open-Meteo         |
 | `models`       | Eloquent models                       |
@@ -133,7 +133,7 @@ git commit -m "<type>[scope]: <descripción en español>"
 
 ```bash
 # New feature
-feat(diagnostico): implementar carga de imagen y análisis con Gemini Vision
+feat(diagnosis): implementar carga de imagen y análisis con Gemini Vision
 
 # Bug fix
 fix(gemini): manejar JSON inválido en respuesta de la API
@@ -142,7 +142,7 @@ fix(gemini): manejar JSON inválido en respuesta de la API
 feat(weather): integrar Open-Meteo para enriquecer diagnóstico con clima
 
 # Migration
-chore(migrations): crear tabla diagnosticos con campos de plaga y clima
+chore(migrations): crear tabla diagnoses con campos de plaga y clima
 
 # Prompt improvement
 refactor(gemini): actualizar prompt para priorizar plagas de Santa Cruz
