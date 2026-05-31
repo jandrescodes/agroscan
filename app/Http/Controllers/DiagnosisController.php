@@ -9,6 +9,7 @@ use App\Services\WeatherService;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\View\View;
+use Illuminate\Http\JsonResponse;
 use RuntimeException;
 
 class DiagnosisController extends Controller
@@ -19,6 +20,13 @@ class DiagnosisController extends Controller
         private readonly GeminiService $gemini,
         private readonly WeatherService $weather,
     ) {}
+
+    public function index(): View
+    {
+        $diagnoses = Diagnosis::latest()->paginate(10);
+
+        return view('diagnosis.index', ['diagnoses' => $diagnoses]);
+    }
 
     public function create(): View
     {

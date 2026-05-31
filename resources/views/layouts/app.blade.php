@@ -25,6 +25,19 @@
             <span style="color: #6cb33e; font-size: 0.6rem; font-weight: 700; letter-spacing: 0.14em; padding-top: 2px;">
                 SCZ · BO
             </span>
+
+            <nav class="ml-auto flex items-center gap-1">
+                <a href="{{ route('diagnosis.create') }}"
+                   class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+                   style="color: {{ request()->routeIs('diagnosis.create') ? '#f0ead8' : '#a8c890' }}; background: {{ request()->routeIs('diagnosis.create') ? 'rgba(255,255,255,0.1)' : 'transparent' }};">
+                    Nuevo
+                </a>
+                <a href="{{ route('diagnosis.index') }}"
+                   class="rounded-lg px-3 py-1.5 text-sm font-medium transition-colors"
+                   style="color: {{ request()->routeIs('diagnosis.index') ? '#f0ead8' : '#a8c890' }}; background: {{ request()->routeIs('diagnosis.index') ? 'rgba(255,255,255,0.1)' : 'transparent' }};">
+                    Historial
+                </a>
+            </nav>
         </div>
     </header>
 
