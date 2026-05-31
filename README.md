@@ -24,9 +24,18 @@ Contacto: jandrespb4@gmail.com
 
 ## Capturas de pantalla
 
-![Formulario de diagnóstico](docs/screenshots/create.png)
-![Resultado del diagnóstico](docs/screenshots/show.png)
-![Historial de diagnósticos](docs/screenshots/index.png)
+<table>
+  <tr>
+    <td align="center"><b>Formulario de diagnóstico</b></td>
+    <td align="center"><b>Resultado del diagnóstico</b></td>
+    <td align="center"><b>Historial</b></td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/create.png" alt="Formulario de diagnóstico"/></td>
+    <td><img src="docs/screenshots/show.png" alt="Resultado del diagnóstico"/></td>
+    <td><img src="docs/screenshots/index.png" alt="Historial de diagnósticos"/></td>
+  </tr>
+</table>
 
 ---
 
