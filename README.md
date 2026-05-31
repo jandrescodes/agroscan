@@ -1,59 +1,187 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
-
 <p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
+  <h1 align="center">AgroScan 🌱</h1>
+  <p align="center"><em>Diagnóstico inteligente de plagas para pequeños productores de Santa Cruz, Bolivia.</em></p>
 </p>
 
-## About Laravel
+AgroScan es una aplicación web que permite a agricultores subir una fotografía de su cultivo y recibir en segundos un diagnóstico de plagas o enfermedades impulsado por inteligencia artificial, junto con acciones inmediatas y preventivas adaptadas al contexto agrícola de Santa Cruz, Bolivia.
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+<p align="center">
+  Desarrollado para el hackathon <strong>Build With AI 2026</strong> organizado por <strong>GDG Santa Cruz</strong> y la <strong>Universidad Católica Boliviana (UCB)</strong>.
+</p>
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+---
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+## Equipo
 
-## Learning Laravel
+| Nombre                    | GitHub                                     |
+| ------------------------- | ------------------------------------------ |
+| José Andrés Meneces López | [@Jandres25](https://github.com/Jandres25) |
+| José María Orozco Sossa   | [@Jhos3ph](https://github.com/Jhos3ph)     |
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework. You can also check out [Laravel Learn](https://laravel.com/learn), where you will be guided through building a modern Laravel application.
+Contacto: jandrespb4@gmail.com
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+---
 
-## Laravel Sponsors
+## Capturas de pantalla
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+![Formulario de diagnóstico](docs/screenshots/create.png)
+![Resultado del diagnóstico](docs/screenshots/show.png)
+![Historial de diagnósticos](docs/screenshots/index.png)
 
-### Premium Partners
+---
 
-- **[Vehikl](https://vehikl.com)**
-- **[Tighten Co.](https://tighten.co)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Redberry](https://redberry.international/laravel-development)**
-- **[Active Logic](https://activelogic.com)**
+## Arquitectura
 
-## Contributing
+```
+agroscan/
+├── app/
+│   ├── Http/Controllers/
+│   │   └── DiagnosisController.php   ← create, store, show, index, consulta
+│   ├── Http/Requests/
+│   │   └── DiagnosisFormRequest.php
+│   ├── Models/
+│   │   └── Diagnosis.php
+│   └── Services/
+│       ├── GeminiService.php         ← Vertex AI (Gemini Vision)
+│       └── WeatherService.php        ← Open-Meteo API
+├── config/
+│   └── gemini.php
+├── database/migrations/
+│   └── ..._create_diagnoses_table.php
+├── resources/views/diagnosis/
+│   ├── create.blade.php              ← formulario de carga
+│   ├── show.blade.php                ← resultado + chat de consultas
+│   └── index.blade.php              ← historial paginado
+└── routes/web.php
+```
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+**Flujo principal:**
 
-## Code of Conduct
+1. El agricultor selecciona el cultivo y sube una foto.
+2. `GeminiService` envía la imagen a la API Gemini Vision (Vertex AI) y recibe un JSON estructurado con plaga detectada, nivel de riesgo y acciones.
+3. `WeatherService` consulta Open-Meteo para enriquecer el diagnóstico con temperatura, humedad y condición del cielo actuales (Santa Cruz, Bolivia).
+4. El resultado se persiste en base de datos y se muestra al agricultor.
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+---
 
-## Security Vulnerabilities
+## Stack tecnológico
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+| Tecnología        | Versión          | Rol                                    |
+| ----------------- | ---------------- | -------------------------------------- |
+| PHP               | 8.2+             | Lenguaje backend                       |
+| Laravel           | 12.x             | Framework principal                    |
+| MariaDB           | 10.x+            | Base de datos (producción y dev local) |
+| SQLite            | —                | Base de datos en tests                 |
+| Gemini Vision API | gemini-2.0-flash | Análisis de imagen con IA (Vertex AI)  |
+| Open-Meteo API    | —                | Condiciones climáticas (sin clave)     |
+| Alpine.js         | 3.15.x           | Interactividad frontend                |
+| Tailwind CSS      | 4.x              | Estilos utilitarios                    |
+| Vite              | 7.x              | Bundler de assets                      |
 
-## License
+---
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+## Requisitos previos
+
+- PHP 8.2+
+- Composer
+- Node.js 18+ y npm
+- MariaDB o MySQL corriendo localmente (XAMPP, Laragon, etc.)
+- Cuenta de Google Cloud con Vertex AI habilitado y credenciales de aplicación configuradas (`GOOGLE_APPLICATION_CREDENTIALS`)
+
+---
+
+## Instalación y ejecución
+
+```bash
+# 1. Clonar el repositorio
+git clone https://github.com/Jandres25/agroscan.git
+cd agroscan
+
+# 2. Instalar dependencias PHP
+composer install
+
+# 3. Instalar dependencias JS
+npm install
+
+# 4. Copiar y configurar variables de entorno
+cp .env.example .env
+php artisan key:generate
+
+# 5. Configurar la base de datos en .env (ver sección siguiente)
+# 6. Ejecutar migraciones
+php artisan migrate
+
+# 7. Crear el enlace simbólico para imágenes públicas
+php artisan storage:link
+
+# 8. Compilar assets
+npm run build
+
+# 9. Iniciar el servidor de desarrollo
+php artisan serve
+```
+
+La aplicación estará disponible en `http://localhost:8000`.
+
+---
+
+## Variables de entorno requeridas
+
+Copia `.env.example` a `.env` y completa los siguientes valores:
+
+```env
+# Base de datos
+DB_CONNECTION=mysql
+DB_HOST=127.0.0.1
+DB_PORT=3306
+DB_DATABASE=agroscan
+DB_USERNAME=root
+DB_PASSWORD=
+
+# Google Cloud / Vertex AI
+GOOGLE_CLOUD_PROJECT=tu-project-id
+GOOGLE_APPLICATION_CREDENTIALS=/ruta/a/credentials.json
+
+# Gemini (opcional — usa los valores por defecto si no se especifican)
+GEMINI_MODEL=gemini-2.0-flash
+GEMINI_LOCATION=us-central1
+GEMINI_TIMEOUT=30
+```
+
+> **Nunca** commitear el archivo `.env` ni las credenciales de Google Cloud al repositorio.
+
+---
+
+## Ejecución de tests
+
+```bash
+composer run test
+# o directamente:
+php artisan test
+```
+
+Los tests usan SQLite en memoria — no requieren MariaDB corriendo.
+
+---
+
+## Plagas objetivo (Santa Cruz, Bolivia)
+
+| Plaga            | Cultivos típicos  |
+| ---------------- | ----------------- |
+| Gusano cogollero | Maíz, sorgo       |
+| Nematodos        | Soya, hortalizas  |
+| Bacteriosis      | Arroz, tomate     |
+| Monilia          | Cacao             |
+| Roya             | Soya, café, trigo |
+
+---
+
+## Licencia
+
+MIT
+
+---
+
+<p align="center">
+  Hecho con ❤️ en Santa Cruz, Bolivia · <strong>Build With AI 2026</strong> · GDG Santa Cruz · UCB
+</p>
