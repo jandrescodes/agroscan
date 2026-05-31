@@ -13,18 +13,18 @@ class DiagnosisTest extends TestCase
     private function makeDiagnosis(array $overrides = []): Diagnosis
     {
         return Diagnosis::create(array_merge([
-            'image_path'        => 'diagnoses/test.jpg',
-            'crop'              => 'maíz',
-            'location'          => 'Santa Cruz',
-            'has_problem'       => 1,
-            'pest_name'         => 'Gusano cogollero',
-            'risk_level'        => 'high',
-            'description'       => 'Daño en cogollo.',
-            'immediate_action'  => 'Aplicar control.',
+            'image_path' => 'diagnoses/test.jpg',
+            'crop' => 'maíz',
+            'location' => 'Santa Cruz',
+            'has_problem' => 1,
+            'pest_name' => 'Gusano cogollero',
+            'risk_level' => 'high',
+            'description' => 'Daño en cogollo.',
+            'immediate_action' => 'Aplicar control.',
             'preventive_action' => 'Monitoreo semanal.',
-            'confidence'        => 0.923,
-            'temperature'       => 28.5,
-            'humidity'          => 65.0,
+            'confidence' => 0.923,
+            'temperature' => 28.5,
+            'humidity' => 65.0,
             'weather_condition' => 'Despejado',
         ], $overrides));
     }
@@ -47,17 +47,17 @@ class DiagnosisTest extends TestCase
 
     public function test_risk_label_returns_spanish_label(): void
     {
-        $this->assertSame('Bajo',  $this->makeDiagnosis(['risk_level' => 'low'])->risk_label);
+        $this->assertSame('Bajo', $this->makeDiagnosis(['risk_level' => 'low'])->risk_label);
         $this->assertSame('Medio', $this->makeDiagnosis(['risk_level' => 'medium'])->risk_label);
-        $this->assertSame('Alto',  $this->makeDiagnosis(['risk_level' => 'high'])->risk_label);
+        $this->assertSame('Alto', $this->makeDiagnosis(['risk_level' => 'high'])->risk_label);
     }
 
     public function test_risk_label_is_null_when_no_risk(): void
     {
         $diagnosis = $this->makeDiagnosis([
             'has_problem' => false,
-            'pest_name'   => null,
-            'risk_level'  => null,
+            'pest_name' => null,
+            'risk_level' => null,
         ]);
 
         $this->assertNull($diagnosis->risk_label);
@@ -74,7 +74,7 @@ class DiagnosisTest extends TestCase
 
     public function test_fillable_contains_all_editable_fields(): void
     {
-        $diagnosis = new Diagnosis();
+        $diagnosis = new Diagnosis;
 
         foreach ([
             'image_path', 'crop', 'location', 'has_problem', 'pest_name',

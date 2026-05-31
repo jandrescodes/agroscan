@@ -29,9 +29,9 @@ class Diagnosis extends Model
 
     /** @var array<string, string> */
     public const RISK_LABELS = [
-        'low'    => 'Bajo',
+        'low' => 'Bajo',
         'medium' => 'Medio',
-        'high'   => 'Alto',
+        'high' => 'Alto',
     ];
 
     /** @return array<string, string> */
@@ -39,9 +39,9 @@ class Diagnosis extends Model
     {
         return [
             'has_problem' => 'boolean',
-            'confidence'  => 'float',
+            'confidence' => 'float',
             'temperature' => 'float',
-            'humidity'    => 'float',
+            'humidity' => 'float',
         ];
     }
 
