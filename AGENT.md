@@ -11,7 +11,7 @@
 El agricultor sube una foto del cultivo; la app consulta Gemini Vision API y Open-Meteo para
 devolver un diagnóstico estructurado con acciones inmediatas y preventivas.
 
-**Estado actual:** Sprint 1 — scaffold inicial completado, servicios e interfaces por implementar.
+**Estado actual:** Sprint 2 — MVP funcional con diagnóstico IA, agente de consultas, historial paginado y clima contextualizado por municipio.
 
 ---
 
@@ -32,12 +32,14 @@ devolver un diagnóstico estructurado con acciones inmediatas y preventivas.
 agroscan/
 ├── app/
 │   ├── Http/Controllers/
-│   │   └── DiagnosisController.php
+│   │   └── DiagnosisController.php   ← create, store, show, index, consulta
+│   ├── Http/Requests/
+│   │   └── DiagnosisFormRequest.php
 │   ├── Models/
 │   │   └── Diagnosis.php
 │   └── Services/
-│       ├── GeminiService.php       ← Gemini Vision API
-│       └── WeatherService.php      ← Open-Meteo API
+│       ├── GeminiService.php         ← Gemini Vision API; analyze() + consultarSobreDiagnostico()
+│       └── WeatherService.php        ← Open-Meteo; coordenadas por municipio SCZ
 ├── config/
 │   └── gemini.php
 ├── database/
@@ -45,8 +47,9 @@ agroscan/
 │       └── ..._create_diagnoses_table.php
 ├── resources/views/
 │   └── diagnosis/
-│       ├── create.blade.php
-│       └── show.blade.php
+│       ├── create.blade.php          ← formulario con drag-drop y loading overlay
+│       ├── show.blade.php            ← resultado + chat de consultas (Alpine)
+│       └── index.blade.php           ← historial paginado
 └── routes/
     └── web.php
 ```
@@ -79,13 +82,13 @@ diagnoses (
 
 ## Plagas Objetivo (Santa Cruz, Bolivia)
 
-| Plaga              | Cultivo típico         | Nivel típico |
-|--------------------|------------------------|--------------|
-| Gusano cogollero   | Maíz, sorgo            | alto         |
-| Nematodos          | Soya, hortalizas       | medio-alto   |
-| Bacteriosis        | Arroz, tomate          | medio        |
-| Monilia            | Cacao                  | alto         |
-| Roya               | Soya, café, trigo      | medio-alto   |
+| Plaga            | Cultivo típico    | Nivel típico |
+| ---------------- | ----------------- | ------------ |
+| Gusano cogollero | Maíz, sorgo       | alto         |
+| Nematodos        | Soya, hortalizas  | medio-alto   |
+| Bacteriosis      | Arroz, tomate     | medio        |
+| Monilia          | Cacao             | alto         |
+| Roya             | Soya, café, trigo | medio-alto   |
 
 ---
 
@@ -95,13 +98,13 @@ El prompt siempre instruye a Gemini a responder **solo** con JSON válido:
 
 ```json
 {
-  "has_problem": true,
-  "pest_name": "Gusano cogollero",
-  "risk_level": "high",
-  "description": "...",
-  "immediate_action": "...",
-  "preventive_action": "...",
-  "confidence": 0.92
+    "has_problem": true,
+    "pest_name": "Gusano cogollero",
+    "risk_level": "high",
+    "description": "...",
+    "immediate_action": "...",
+    "preventive_action": "...",
+    "confidence": 0.92
 }
 ```
 
@@ -114,14 +117,16 @@ El prompt siempre instruye a Gemini a responder **solo** con JSON válido:
 ### PHP — Controladores
 
 - Un controlador por módulo: `DiagnosisController`, etc.
-- Métodos estándar: `create()` (formulario), `store()` (procesa imagen), `show()` (resultado).
+- Métodos: `create()` (formulario), `store()` (procesa imagen), `show()` (resultado), `index()` (historial paginado), `consulta()` (chat JSON efímero).
 - Services inyectados vía constructor — nunca `app()` ni `resolve()` en controladores.
 - El controlador atrapa `\RuntimeException` de `GeminiService` y redirige con `->with('error', ...)`.
+- En `store()`: el clima se fetcha **antes** de llamar a Gemini para enriquecer el prompt.
 
 ### PHP — Services
 
-- `GeminiService::analyze(string $imagePath, string $crop): array` — devuelve el array decodificado del JSON de Gemini. Lanza `\RuntimeException` en fallo de API o JSON inválido.
-- `WeatherService::getConditions(float $lat, float $lng): ?array` — devuelve array con `temperature`, `humidity`, `weather_condition` o `null` si falla (no bloquea el flujo).
+- `GeminiService::analyze(string $imagePath, string $crop, ?array $weather = null): array` — devuelve el array decodificado del JSON de Gemini. El clima se incluye en el prompt si está disponible. Lanza `\RuntimeException` en fallo de API o JSON inválido.
+- `GeminiService::consultarSobreDiagnostico(array $diagnostico, string $pregunta): string` — responde preguntas de seguimiento en texto libre; reutiliza ADC + cURL de `analyze()` sin `inline_data`. Respuesta efímera, no se persiste.
+- `WeatherService::getConditions(?string $location = null): ?array` — devuelve array con `temperature`, `humidity`, `weather_condition`, `resolved_location` o `null` si falla. Resuelve coordenadas específicas para 25 municipios/zonas del departamento de Santa Cruz.
 
 ### PHP — Modelos
 
@@ -186,5 +191,5 @@ Al generar código para este proyecto:
 
 ---
 
-*Última actualización: Sprint 1 — scaffold inicial*
-*Mantener este archivo actualizado al iniciar cada nuevo sprint.*
+_Última actualización: Sprint 2 — MVP completo_
+_Mantener este archivo actualizado al iniciar cada nuevo sprint._

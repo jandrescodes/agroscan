@@ -48,12 +48,14 @@ Standard Laravel MVC.
 ```
 app/
 ├── Http/Controllers/
-│   └── DiagnosisController.php   ← sube imagen, llama servicios, persiste resultado
+│   └── DiagnosisController.php   ← create, store, show, index, consulta
+├── Http/Requests/
+│   └── DiagnosisFormRequest.php
 ├── Models/
 │   └── Diagnosis.php
 ├── Services/
-│   ├── GeminiService.php           ← llama Gemini Vision API, devuelve array estructurado
-│   └── WeatherService.php          ← llama Open-Meteo, devuelve condiciones actuales
+│   ├── GeminiService.php           ← Gemini Vision API; analyze() + consultarSobreDiagnostico()
+│   └── WeatherService.php          ← Open-Meteo; resolución de coordenadas por municipio SCZ
 config/
 └── gemini.php                      ← api_key, model, endpoint, timeout
 database/migrations/
@@ -61,20 +63,21 @@ database/migrations/
 resources/views/
 └── diagnosis/
     ├── create.blade.php            ← formulario de carga de imagen
-    └── show.blade.php              ← resultado del diagnóstico
+    ├── show.blade.php              ← resultado del diagnóstico + chat de consultas
+    └── index.blade.php             ← historial paginado
 routes/
 └── web.php
 ```
 
 ## Domain — Plagas objetivo (Santa Cruz, Bolivia)
 
-| Plaga              | Cultivo típico         |
-|--------------------|------------------------|
-| Gusano cogollero   | Maíz, sorgo            |
-| Nematodos          | Soya, hortalizas       |
-| Bacteriosis        | Arroz, tomate          |
-| Monilia            | Cacao                  |
-| Roya               | Soya, café, trigo      |
+| Plaga            | Cultivo típico    |
+| ---------------- | ----------------- |
+| Gusano cogollero | Maíz, sorgo       |
+| Nematodos        | Soya, hortalizas  |
+| Bacteriosis      | Arroz, tomate     |
+| Monilia          | Cacao             |
+| Roya             | Soya, café, trigo |
 
 ## Gemini response contract
 
@@ -82,13 +85,13 @@ El prompt instruye a Gemini a devolver **solo** JSON válido con esta forma:
 
 ```json
 {
-  "has_problem": true,
-  "pest_name": "Gusano cogollero",
-  "risk_level": "high",
-  "description": "...",
-  "immediate_action": "...",
-  "preventive_action": "...",
-  "confidence": 0.92
+    "has_problem": true,
+    "pest_name": "Gusano cogollero",
+    "risk_level": "high",
+    "description": "...",
+    "immediate_action": "...",
+    "preventive_action": "...",
+    "confidence": 0.92
 }
 ```
 
@@ -99,9 +102,13 @@ El prompt instruye a Gemini a devolver **solo** JSON válido con esta forma:
 - Services are injected via constructor DI — no `app()` calls inside controllers.
 - `GeminiService` throws `\RuntimeException` on API errors; the controller catches and redirects with an error flash.
 - `WeatherService` returns `null` on failure — weather is enrichment, not required.
+- `WeatherService::getConditions(?string $location)` resuelve coordenadas por municipio de SCZ (25 zonas conocidas); si no hay match usa `-17.7833, -63.1821` (SCZ ciudad).
+- El clima se fetcha **antes** de llamar a Gemini para incluirlo en el prompt de análisis.
+- `GeminiService::consultarSobreDiagnostico()` maneja el chat de consultas — respuesta efímera, no se persiste.
 - Images are stored in `storage/app/public/diagnoses/` via `Storage::disk('public')`.
 - All user-facing strings are in Spanish.
 - No JS frameworks — plain Blade + Alpine.js if lightweight interactivity is needed.
+- Timezone: `America/La_Paz` (UTC-4).
 
 ## Notes
 

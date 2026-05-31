@@ -24,18 +24,27 @@ Contacto: jandrespb4@gmail.com
 
 ## Capturas de pantalla
 
-<table>
-  <tr>
-    <td align="center"><b>Formulario de diagnóstico</b></td>
-    <td align="center"><b>Resultado del diagnóstico</b></td>
-    <td align="center"><b>Historial</b></td>
-  </tr>
-  <tr>
-    <td><img src="docs/screenshots/create.png" alt="Formulario de diagnóstico"/></td>
-    <td><img src="docs/screenshots/show.png" alt="Resultado del diagnóstico"/></td>
-    <td><img src="docs/screenshots/index.png" alt="Historial de diagnósticos"/></td>
-  </tr>
-</table>
+### Formulario de diagnóstico
+
+Selección de cultivo, carga de imagen con vista previa y ubicación opcional.
+
+![Formulario de diagnóstico](docs/screenshots/create.png)
+
+---
+
+### Resultado del diagnóstico
+
+Plaga detectada, nivel de riesgo, acciones recomendadas y condiciones climáticas actuales.
+
+![Resultado del diagnóstico](docs/screenshots/show.png)
+
+---
+
+### Historial de diagnósticos
+
+Lista paginada de todos los análisis realizados con badge de riesgo y fecha.
+
+![Historial de diagnósticos](docs/screenshots/index.png)
 
 ---
 
@@ -66,10 +75,10 @@ agroscan/
 
 **Flujo principal:**
 
-1. El agricultor selecciona el cultivo y sube una foto.
-2. `GeminiService` envía la imagen a la API Gemini Vision (Vertex AI) y recibe un JSON estructurado con plaga detectada, nivel de riesgo y acciones.
-3. `WeatherService` consulta Open-Meteo para enriquecer el diagnóstico con temperatura, humedad y condición del cielo actuales (Santa Cruz, Bolivia).
-4. El resultado se persiste en base de datos y se muestra al agricultor.
+1. El agricultor selecciona el cultivo, sube una foto y opcionalmente indica su ubicación.
+2. `WeatherService` resuelve las coordenadas exactas según la ubicación (25 municipios de SCZ reconocidos) y consulta Open-Meteo para obtener temperatura, humedad y condición del cielo en tiempo real.
+3. `GeminiService` envía la imagen junto con el contexto climático y la ubicación a Gemini Vision API, que devuelve un JSON estructurado con plaga detectada, nivel de riesgo y acciones adaptadas al clima actual.
+4. El resultado se persiste en base de datos y se muestra al agricultor con un chat de consultas de seguimiento impulsado por el mismo modelo.
 
 ---
 

@@ -8,13 +8,13 @@
 
 ## Cómo usar este archivo
 
-| Eje                   | Pregunta          | Para qué sirve                                 |
-|-----------------------|-------------------|------------------------------------------------|
-| **Rol**               | ¿Quién eres?      | Define el nivel y especialidad del agente      |
-| **Contexto**          | ¿Dónde estamos?   | El proyecto, stack y módulo activo             |
-| **Tarea exacta**      | ¿Qué necesitas?   | Concreto y específico — nunca genérico         |
-| **Restricciones**     | ¿Qué límites hay? | Convenciones del proyecto que no se rompen     |
-| **Formato de salida** | ¿Cómo lo quieres? | Estructura del output esperado                 |
+| Eje                   | Pregunta          | Para qué sirve                             |
+| --------------------- | ----------------- | ------------------------------------------ |
+| **Rol**               | ¿Quién eres?      | Define el nivel y especialidad del agente  |
+| **Contexto**          | ¿Dónde estamos?   | El proyecto, stack y módulo activo         |
+| **Tarea exacta**      | ¿Qué necesitas?   | Concreto y específico — nunca genérico     |
+| **Restricciones**     | ¿Qué límites hay? | Convenciones del proyecto que no se rompen |
+| **Formato de salida** | ¿Cómo lo quieres? | Estructura del output esperado             |
 
 **Reglas de uso:**
 
@@ -86,9 +86,10 @@ Descripción: [criterios de aceptación]
 - Seguir el patrón Controller → Service → Model de DiagnosisController como referencia
 - FormRequest para validación — nunca validate() inline en el controlador
 - Imagen almacenada en storage/app/public/diagnoses/ vía Storage::disk('public')
-- GeminiService::analyze() recibe la ruta local de la imagen y el tipo de cultivo (`crop`)
+- GeminiService::analyze() recibe imagen, cultivo y array de clima opcional (el clima se fetcha ANTES de llamar a Gemini)
+- GeminiService::consultarSobreDiagnostico() para chat de seguimiento — efímero, sin persistencia
 - Respuesta de Gemini siempre validada contra el contrato JSON definido en AGENT.md
-- WeatherService::getConditions() recibe lat/lng; retorna null si falla
+- WeatherService::getConditions(?string $location) resuelve coordenadas por municipio SCZ; retorna null si falla
 - Blade components para badge de `risk_level` y card de resultado
 - Strings en español; sin hardcodear coordenadas — parametrizar ubicación
 
@@ -266,5 +267,5 @@ Devuelve en este orden:
 
 ---
 
-*Última actualización: Sprint 1 — scaffold inicial*
-*Mantener sincronizado con CLAUDE.md y AGENT.md al iniciar cada sprint.*
+_Última actualización: Sprint 2 — MVP completo_
+_Mantener sincronizado con CLAUDE.md y AGENT.md al iniciar cada sprint._
