@@ -212,74 +212,6 @@
             </div>
         @endif
 
-        {{-- ── Weather section ── --}}
-        @if ($diagnosis->temperature !== null || $diagnosis->humidity !== null || $diagnosis->weather_condition)
-            <div class="mb-6 rounded-2xl p-5"
-                 style="background: #f0f9ff; border: 1px solid #bae6fd; animation: slide-up 0.45s ease-out 0.54s both;">
-                <h2 class="mb-3 flex items-center gap-2 text-xs font-bold uppercase tracking-widest"
-                    style="color: #0369a1; letter-spacing: 0.12em;">
-                    <svg width="15" height="15" viewBox="0 0 20 20" fill="currentColor" style="color: #0ea5e9;">
-                        <path d="M5.5 16.5A4.5 4.5 0 015.5 7.5a6 6 0 1111 2 3.5 3.5 0 01-.5 7h-10.5z"/>
-                    </svg>
-                    Clima actual en la zona
-                </h2>
-                <div class="flex flex-wrap gap-x-6 gap-y-3">
-                    @if ($diagnosis->temperature !== null)
-                        <div class="flex items-center gap-2">
-                            <div class="flex h-8 w-8 items-center justify-center rounded-lg"
-                                 style="background: #fff7ed; border: 1px solid #fed7aa;">
-                                <svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="#ea580c" stroke-width="1.5">
-                                    <path d="M8 1v8.5" stroke-linecap="round"/>
-                                    <circle cx="8" cy="11.5" r="2.5" fill="#ea580c" stroke="none"/>
-                                    <path d="M5.5 4h-1M5.5 7h-1" stroke-linecap="round" opacity="0.6"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-xs" style="color: #7a7264;">Temperatura</p>
-                                <p class="text-sm font-bold" style="color: #1c1a12;">
-                                    {{ number_format($diagnosis->temperature, 1) }} °C
-                                </p>
-                            </div>
-                        </div>
-                    @endif
-
-                    @if ($diagnosis->humidity !== null)
-                        <div class="flex items-center gap-2">
-                            <div class="flex h-8 w-8 items-center justify-center rounded-lg"
-                                 style="background: #eff6ff; border: 1px solid #bfdbfe;">
-                                <svg width="14" height="14" viewBox="0 0 16 16" fill="none">
-                                    <path d="M8 2C8 2 3 8 3 11a5 5 0 0010 0C13 8 8 2 8 2Z" fill="#3b82f6" opacity="0.3" stroke="#2563eb" stroke-width="1.4" stroke-linejoin="round"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-xs" style="color: #7a7264;">Humedad</p>
-                                <p class="text-sm font-bold" style="color: #1c1a12;">
-                                    {{ number_format($diagnosis->humidity, 0) }}%
-                                </p>
-                            </div>
-                        </div>
-                    @endif
-
-                    @if ($diagnosis->weather_condition)
-                        <div class="flex items-center gap-2">
-                            <div class="flex h-8 w-8 items-center justify-center rounded-lg"
-                                 style="background: #fefce8; border: 1px solid #fde68a;">
-                                <svg width="15" height="15" viewBox="0 0 20 20" fill="#eab308">
-                                    <path d="M10 2a1 1 0 011 1v1a1 1 0 11-2 0V3a1 1 0 011-1zm4.22 1.78a1 1 0 011.42 1.42l-.7.7a1 1 0 01-1.42-1.42l.7-.7zm1.78 5.22a1 1 0 110 2h-1a1 1 0 110-2h1zm-1.78 5.22l.7.7a1 1 0 01-1.42 1.42l-.7-.7a1 1 0 011.42-1.42zM10 15a1 1 0 011 1v1a1 1 0 11-2 0v-1a1 1 0 011-1zm-5.22-1.78a1 1 0 011.42 1.42l-.7.7a1 1 0 01-1.42-1.42l.7-.7zm-1.78-4.22H2a1 1 0 110-2h1a1 1 0 110 2zm1.78-5.22l-.7-.7a1 1 0 011.42-1.42l.7.7a1 1 0 01-1.42 1.42zM10 6a4 4 0 100 8 4 4 0 000-8z"/>
-                                </svg>
-                            </div>
-                            <div>
-                                <p class="text-xs" style="color: #7a7264;">Cielo</p>
-                                <p class="text-sm font-bold" style="color: #1c1a12;">
-                                    {{ $diagnosis->weather_condition }}
-                                </p>
-                            </div>
-                        </div>
-                    @endif
-                </div>
-            </div>
-        @endif
-
         {{-- ── CTA ── --}}
         <a
             href="{{ route('diagnosis.create') }}"
@@ -292,12 +224,144 @@
             Nuevo diagnóstico
         </a>
 
-        {{-- Timestamp --}}
+        {{-- ── Agente de consultas (chat efímero, no se persiste) ── --}}
+        <div
+            x-data="consultaChat({
+                endpoint: '{{ route('diagnosis.consulta', $diagnosis) }}',
+                token: '{{ csrf_token() }}'
+            })"
+            class="mt-6 rounded-2xl p-5"
+            style="background: #f4efe3; border: 1px solid #e4ddd1; animation: slide-up 0.45s ease-out 0.7s both;"
+        >
+            <h2 class="mb-1 flex items-center gap-2 text-sm font-bold" style="color: #192d0b;">
+                <svg width="18" height="18" viewBox="0 0 20 20" fill="none" stroke="#6cb33e" stroke-width="1.8">
+                    <path d="M4 4h12a1 1 0 011 1v8a1 1 0 01-1 1H8l-4 3v-3a1 1 0 01-1-1V5a1 1 0 011-1z"
+                          stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+                Pregúntale al agrónomo
+            </h2>
+            <p class="mb-3 text-xs" style="color: #7a7264;">
+                Haz una consulta de seguimiento sobre este diagnóstico.
+            </p>
+
+            <form @submit.prevent="enviar()" class="flex flex-col gap-2.5">
+                <textarea
+                    x-model="pregunta"
+                    :disabled="cargando"
+                    maxlength="500"
+                    rows="2"
+                    placeholder="Ej: ¿Qué producto puedo aplicar y cada cuántos días?"
+                    class="w-full resize-none rounded-xl px-4 py-3 text-sm transition-colors focus:outline-none"
+                    style="border: 2px solid #ddd5c4; background: #fdfcf8; color: #1c1a12;"
+                    onfocus="this.style.borderColor='#6cb33e'"
+                    onblur="this.style.borderColor='#ddd5c4'"
+                ></textarea>
+
+                <div class="flex items-center justify-between">
+                    <span class="text-xs" style="color: #b0a898;" x-text="`${pregunta.length}/500`"></span>
+                    <button
+                        type="submit"
+                        :disabled="cargando || pregunta.trim() === ''"
+                        class="flex items-center justify-center gap-2 rounded-xl px-5 py-2.5 text-sm font-semibold text-white transition-all duration-150 hover:brightness-110 active:scale-[0.98] disabled:cursor-not-allowed disabled:opacity-50"
+                        style="background: #2a5c0f;"
+                    >
+                        <template x-if="cargando">
+                            <svg class="animate-spin" width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                <circle cx="12" cy="12" r="10" stroke="currentColor" stroke-width="3" opacity="0.25"/>
+                                <path d="M12 2a10 10 0 0110 10" stroke="currentColor" stroke-width="3" stroke-linecap="round"/>
+                            </svg>
+                        </template>
+                        <span x-text="cargando ? 'Consultando…' : 'Consultar'"></span>
+                    </button>
+                </div>
+            </form>
+
+            <div x-show="error" x-transition
+                 class="mt-3 rounded-xl px-4 py-3 text-sm"
+                 style="background: #fef2f2; border: 1px solid #fecaca; color: #b91c1c;"
+                 x-text="error"></div>
+
+            <div x-show="respuesta" x-transition
+                 class="mt-3 rounded-xl px-4 py-3.5"
+                 style="background: #ffffff; border: 1px solid #d8e8c8; border-left: 4px solid #6cb33e;">
+                <p class="mb-1 text-xs font-semibold uppercase tracking-wide" style="color: #2a5c0f;">
+                    Respuesta del agrónomo
+                </p>
+                <p class="whitespace-pre-line text-sm leading-relaxed" style="color: #3d3a30;" x-text="respuesta"></p>
+            </div>
+        </div>
+
+        {{-- Timestamp + clima --}}
         <p class="mt-4 text-center text-xs" style="color: #b0a898;">
             Diagnóstico realizado el {{ $diagnosis->created_at->format('d/m/Y \a \l\a\s H:i') }}
         </p>
+        @if ($diagnosis->temperature !== null || $diagnosis->humidity !== null || $diagnosis->weather_condition)
+            @php
+                $weatherParts = [];
+                if ($diagnosis->temperature !== null) $weatherParts[] = number_format($diagnosis->temperature, 1) . ' °C';
+                if ($diagnosis->humidity !== null) $weatherParts[] = (int) $diagnosis->humidity . '% hum.';
+                if ($diagnosis->weather_condition) $weatherParts[] = $diagnosis->weather_condition;
+            @endphp
+            <p class="mt-1 flex items-center justify-center gap-1 text-xs" style="color: #c0b8a8;">
+                <svg width="11" height="11" viewBox="0 0 20 20" fill="currentColor" style="flex-shrink:0; opacity:0.6;">
+                    <path d="M5.5 16.5A4.5 4.5 0 015.5 7.5a6 6 0 1111 2 3.5 3.5 0 01-.5 7h-10.5z"/>
+                </svg>
+                {{ implode(' · ', $weatherParts) }}
+            </p>
+        @endif
 
     </div>
 </div>
 
 @endsection
+
+@push('scripts')
+<script>
+    function consultaChat(config) {
+        return {
+            pregunta: '',
+            respuesta: '',
+            error: '',
+            cargando: false,
+
+            async enviar() {
+                if (this.cargando || this.pregunta.trim() === '') return;
+                this.cargando = true;
+                this.error = '';
+                this.respuesta = '';
+
+                try {
+                    const res = await fetch(config.endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'Accept': 'application/json',
+                            'X-CSRF-TOKEN': config.token,
+                            'X-Requested-With': 'XMLHttpRequest',
+                        },
+                        body: JSON.stringify({ pregunta: this.pregunta }),
+                    });
+
+                    const data = await res.json().catch(() => ({}));
+
+                    if (!res.ok) {
+                        this.error = res.status === 422
+                            ? (data?.errors?.pregunta?.[0] ?? data?.message ?? 'Revisa tu pregunta e intenta nuevamente.')
+                            : (data?.error ?? 'Ocurrió un error al procesar tu consulta.');
+                        return;
+                    }
+
+                    this.respuesta = data?.respuesta ?? '';
+                    if (this.respuesta === '') {
+                        this.error = 'No recibimos una respuesta. Intenta nuevamente.';
+                    }
+                } catch (e) {
+                    this.error = 'No pudimos conectar con el servidor. Verifica tu conexión.';
+                } finally {
+                    this.cargando = false;
+                }
+            },
+        };
+    }
+</script>
+@endpush
