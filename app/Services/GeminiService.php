@@ -228,7 +228,7 @@ class GeminiService
         }
 
         $confidence = isset($data['confidence']) && is_numeric($data['confidence'])
-            ? max(0.0, min(1.0, (float) $data['confidence']))
+            ? round(max(0.0, min(1.0, (float) $data['confidence'])), 2)
             : null;
 
         return [
