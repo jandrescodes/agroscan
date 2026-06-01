@@ -20,7 +20,7 @@ devolver un diagnóstico estructurado con acciones inmediatas y preventivas.
 - **Backend:** Laravel 12, PHP 8.2+, Eloquent ORM
 - **Frontend:** Tailwind CSS v4, Blade templates, Vite 7
 - **Base de datos:** MariaDB (dev con XAMPP / prod) — SQLite solo en tests
-- **IA:** Gemini 2.5 Flash (Gemini Vision API) — clave en `GEMINI_API_KEY`
+- **IA:** Gemini 2.5 Flash (Vertex AI) — autenticación via ADC; `GOOGLE_CLOUD_PROJECT` en `.env`
 - **Clima:** Open-Meteo API (pública, sin clave)
 - **Control de versiones:** Git + GitHub
 
@@ -137,7 +137,7 @@ El prompt siempre instruye a Gemini a responder **solo** con JSON válido:
 ### PHP — Seguridad
 
 - Validar imagen: `mimes:jpg,jpeg,png,webp|max:5120` en el `FormRequest`.
-- Nunca exponer `GEMINI_API_KEY` en logs ni respuestas.
+- Nunca exponer credenciales de Google Cloud en logs ni respuestas HTTP.
 - Sanitizar todo output en Blade con `{{ }}` (escapa automáticamente).
 
 ### Frontend

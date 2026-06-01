@@ -36,7 +36,7 @@ php artisan pail
 - **Laravel 12**, PHP 8.2+
 - **Database:** MariaDB (producción / dev local con XAMPP) — SQLite solo para tests
 - **Frontend:** Tailwind CSS v4 via `@tailwindcss/vite`, Blade templates, Vite 7
-- **IA:** Gemini 2.5 Flash via Gemini Vision API (`GEMINI_API_KEY`, `GEMINI_MODEL` en `.env`)
+- **IA:** Gemini 2.5 Flash via Vertex AI — autenticación por ADC (`GOOGLE_CLOUD_PROJECT`, `GEMINI_MODEL` en `.env`)
 - **Clima:** Open-Meteo API (sin clave — HTTP público)
 - **Queue/Cache/Session:** Database driver (local dev)
 - **Tests:** PHPUnit 11 (`tests/Feature/`, `tests/Unit/`)
@@ -57,7 +57,7 @@ app/
 │   ├── GeminiService.php           ← Gemini Vision API; analyze() + consultarSobreDiagnostico()
 │   └── WeatherService.php          ← Open-Meteo; resolución de coordenadas por municipio SCZ
 config/
-└── gemini.php                      ← api_key, model, endpoint, timeout
+└── gemini.php                      ← project_id, model, location, timeout
 database/migrations/
 └── ..._create_diagnoses_table.php
 resources/views/
@@ -113,4 +113,4 @@ El prompt instruye a Gemini a devolver **solo** JSON válido con esta forma:
 ## Notes
 
 - `AGENT.md` and `PROMPTS.md` contain project context and prompt templates for AI-assisted development.
-- Never commit `GEMINI_API_KEY` — it lives only in `.env` (gitignored).
+- Never commit credentials de Google Cloud — usar ADC (`~/.config/gcloud/`) o `GOOGLE_APPLICATION_CREDENTIALS` en `.env` (gitignored).

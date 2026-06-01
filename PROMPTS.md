@@ -48,7 +48,7 @@ _______________
 - Blade con {{ }} para todo output — sin {!! !!} salvo HTML de confianza interna
 - Colores de riesgo: bajo=verde, medio=amarillo, alto=rojo
 - Sin jQuery — vanilla JS o Alpine.js
-- No exponer GEMINI_API_KEY en logs, respuestas HTTP ni código
+- No exponer credenciales de Google Cloud en logs, respuestas HTTP ni código
 
 [Formato de salida]
 _______________
