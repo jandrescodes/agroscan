@@ -26,7 +26,7 @@ AgroScan es una app web donde el agricultor sube una foto de su cultivo y recibe
 
 | Nombre                    | GitHub                                     |
 | ------------------------- | ------------------------------------------ |
-| José Andrés Meneces López | [@Jandres25](https://github.com/Jandres25) |
+| José Andrés Meneces López | [@jandrescodes](https://github.com/jandrescodes) |
 | José María Orozco Sossa   | [@Jhos3ph](https://github.com/Jhos3ph)     |
 
 Contacto: jandrespb4@gmail.com
@@ -155,7 +155,7 @@ GOOGLE_APPLICATION_CREDENTIALS=/ruta/absoluta/a/credentials.json
 
 ```bash
 # 1. Clonar el repositorio
-git clone https://github.com/Jandres25/agroscan.git
+git clone https://github.com/jandrescodes/agroscan.git
 cd agroscan
 
 # 2. Configurar las variables de entorno
